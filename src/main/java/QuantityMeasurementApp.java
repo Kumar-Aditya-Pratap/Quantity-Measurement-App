@@ -30,7 +30,9 @@ public class QuantityMeasurementApp {
 
             QuantityLength other = (QuantityLength) obj;
 
-            return Double.compare(this.convertToBase(), other.convertToBase()) == 0;
+            double epsilon = 0.0001;
+
+            return Math.abs(this.convertToBase() - other.convertToBase()) < epsilon;
         }
 
         @Override
@@ -41,8 +43,8 @@ public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
 
-        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCH);
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.YARDS);
+        QuantityLength q2 = new QuantityLength(3.0, LengthUnit.FEET);
 
         System.out.println("Are Equal: " + q1.equals(q2));
     }
