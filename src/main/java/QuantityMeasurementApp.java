@@ -1,9 +1,5 @@
 import java.util.Objects;
 
-/**
- * QuantityMeasurementApp provides conversion and equality
- * operations for different length units.
- */
 public class QuantityMeasurementApp {
 
     private static final double EPSILON = 1e-6;
@@ -14,40 +10,14 @@ public class QuantityMeasurementApp {
         private final LengthUnit unit;
 
         public QuantityLength(double value, LengthUnit unit) {
-
-            validateValue(value);
-
             if (unit == null) {
                 throw new IllegalArgumentException("Unit cannot be null");
             }
-
+            if (!Double.isFinite(value)) {
+                throw new IllegalArgumentException("Invalid numeric value");
+            }
             this.value = value;
             this.unit = unit;
-        }
-
-        private static void validateValue(double value) {
-            if (!Double.isFinite(value)) {
-                throw new IllegalArgumentException("Value must be finite");
-            }
-        }
-
-        private double toBaseUnit() {
-            return unit.toFeet(value);
-        }
-
-        /**
-         * Converts this quantity to target unit and returns new QuantityLength
-         */
-        public QuantityLength convertTo(LengthUnit targetUnit) {
-
-            if (targetUnit == null) {
-                throw new IllegalArgumentException("Target unit cannot be null");
-            }
-
-            double baseValue = toBaseUnit();
-            double convertedValue = targetUnit.fromFeet(baseValue);
-
-            return new QuantityLength(convertedValue, targetUnit);
         }
 
         public double getValue() {
@@ -58,12 +28,58 @@ public class QuantityMeasurementApp {
             return unit;
         }
 
+        private double toBaseUnit() {
+            return value * unit.getConversionFactor();
+        }
+
+        private static double fromBaseUnit(double baseValue, LengthUnit targetUnit) {
+            return baseValue / targetUnit.getConversionFactor();
+        }
+
+        public QuantityLength convertTo(LengthUnit targetUnit) {
+            if (targetUnit == null) {
+                throw new IllegalArgumentException("Target unit cannot be null");
+            }
+
+            double base = toBaseUnit();
+            double converted = fromBaseUnit(base, targetUnit);
+
+            return new QuantityLength(converted, targetUnit);
+        }
+
+        public static double convert(double value,
+                                     LengthUnit source,
+                                     LengthUnit target) {
+
+            if (source == null || target == null) {
+                throw new IllegalArgumentException("Unit cannot be null");
+            }
+            if (!Double.isFinite(value)) {
+                throw new IllegalArgumentException("Invalid numeric value");
+            }
+
+            double base = value * source.getConversionFactor();
+            return base / target.getConversionFactor();
+        }
+
+        /* ================= UC6 ADDITION ================= */
+
+        public QuantityLength add(QuantityLength other) {
+
+            if (other == null) {
+                throw new IllegalArgumentException("Second operand cannot be null");
+            }
+
+            double sumBase = this.toBaseUnit() + other.toBaseUnit();
+            double result = fromBaseUnit(sumBase, this.unit);
+
+            return new QuantityLength(result, this.unit);
+        }
+
         @Override
         public boolean equals(Object obj) {
-
             if (this == obj) return true;
-
-            if (obj == null || getClass() != obj.getClass()) return false;
+            if (!(obj instanceof QuantityLength)) return false;
 
             QuantityLength other = (QuantityLength) obj;
 
@@ -77,67 +93,16 @@ public class QuantityMeasurementApp {
 
         @Override
         public String toString() {
-            return value + " " + unit;
+            return "Quantity(" + value + ", " + unit + ")";
         }
-    }
-
-    /**
-     * Static conversion API
-     */
-    public static double convert(double value, LengthUnit source, LengthUnit target) {
-
-        if (!Double.isFinite(value)) {
-            throw new IllegalArgumentException("Value must be finite");
-        }
-
-        if (source == null || target == null) {
-            throw new IllegalArgumentException("Units cannot be null");
-        }
-
-        double base = source.toFeet(value);
-        return target.fromFeet(base);
-    }
-
-    /**
-     * Overloaded conversion method (raw values)
-     */
-    public static void demonstrateLengthConversion(double value,
-                                                   LengthUnit from,
-                                                   LengthUnit to) {
-
-        double result = convert(value, from, to);
-        System.out.println("Converted: " + value + " " + from + " = " + result + " " + to);
-    }
-
-    /**
-     * Overloaded conversion method (existing object)
-     */
-    public static void demonstrateLengthConversion(QuantityLength quantity,
-                                                   LengthUnit to) {
-
-        QuantityLength converted = quantity.convertTo(to);
-        System.out.println("Converted: " + quantity + " = " + converted);
-    }
-
-    /**
-     * Demonstrates equality check
-     */
-    public static void demonstrateLengthEquality(QuantityLength q1,
-                                                 QuantityLength q2) {
-
-        System.out.println(q1 + " equals " + q2 + " ? " + q1.equals(q2));
     }
 
     public static void main(String[] args) {
 
-        demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCH);
-        demonstrateLengthConversion(3.0, LengthUnit.YARDS, LengthUnit.FEET);
+        QuantityLength result =
+                new QuantityLength(1.0, LengthUnit.FEET)
+                        .add(new QuantityLength(12.0, LengthUnit.INCHES));
 
-        QuantityLength q = new QuantityLength(1.0, LengthUnit.YARDS);
-        demonstrateLengthConversion(q, LengthUnit.INCH);
-
-        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCH);
-        demonstrateLengthEquality(q1, q2);
+        System.out.println(result);
     }
 }
