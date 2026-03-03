@@ -1,82 +1,49 @@
+import java.util.Objects;
+
 public class QuantityMeasurementApp {
 
-    // -------- FEET CLASS --------
-    public static class Feet {
+    public static class QuantityLength {
 
         private final double value;
+        private final LengthUnit unit;
 
-        public Feet(double value) {
+        public QuantityLength(double value, LengthUnit unit) {
+
+            if (unit == null) {
+                throw new IllegalArgumentException("Unit cannot be null");
+            }
+
             this.value = value;
+            this.unit = unit;
+        }
+
+        private double convertToBase() {
+            return unit.toFeet(value);
         }
 
         @Override
         public boolean equals(Object obj) {
 
-            if (this == obj) {
-                return true;
-            }
+            if (this == obj) return true;
 
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
+            if (obj == null || getClass() != obj.getClass()) return false;
 
-            Feet other = (Feet) obj;
-            return Double.compare(this.value, other.value) == 0;
+            QuantityLength other = (QuantityLength) obj;
+
+            return Double.compare(this.convertToBase(), other.convertToBase()) == 0;
         }
 
         @Override
         public int hashCode() {
-            return Double.hashCode(value);
+            return Objects.hash(convertToBase());
         }
     }
 
-    // -------- INCHES CLASS --------
-    public static class Inches {
-
-        private final double value;
-
-        public Inches(double value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-
-            if (this == obj) {
-                return true;
-            }
-
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-
-            Inches other = (Inches) obj;
-            return Double.compare(this.value, other.value) == 0;
-        }
-
-        @Override
-        public int hashCode() {
-            return Double.hashCode(value);
-        }
-    }
-
-    // -------- STATIC METHODS --------
-    public static boolean checkFeetEquality(double value1, double value2) {
-        Feet f1 = new Feet(value1);
-        Feet f2 = new Feet(value2);
-        return f1.equals(f2);
-    }
-
-    public static boolean checkInchesEquality(double value1, double value2) {
-        Inches i1 = new Inches(value1);
-        Inches i2 = new Inches(value2);
-        return i1.equals(i2);
-    }
-
-    // -------- MAIN METHOD (OPTIONAL) --------
     public static void main(String[] args) {
 
-        System.out.println("Feet equality: " + checkFeetEquality(1.0, 1.0));
-        System.out.println("Inches equality: " + checkInchesEquality(1.0, 1.0));
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCH);
+
+        System.out.println("Are Equal: " + q1.equals(q2));
     }
 }
