@@ -3,57 +3,77 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class QuantityMeasurementAppTest {
 
+    // -------- LENGTH TESTS --------
     @Test
-    void testEqualityFeetToInches() {
+    void testLengthEquality() {
+        Quantity<LengthUnit> q1 = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> q2 = new Quantity<>(12.0, LengthUnit.INCHES);
 
-        QuantityMeasurementApp a =
-                new QuantityMeasurementApp(1, LengthUnit.FEET);
+        assertTrue(q1.equals(q2));
+    }
 
-        QuantityMeasurementApp b =
-                new QuantityMeasurementApp(12, LengthUnit.INCHES);
+    // -------- WEIGHT TESTS --------
+    @Test
+    void testWeightEquality() {
+        Quantity<WeightUnit> q1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
+        Quantity<WeightUnit> q2 = new Quantity<>(1000.0, WeightUnit.GRAM);
 
-        assertTrue(a.equals(b));
+        assertTrue(q1.equals(q2));
+    }
+
+    // -------- VOLUME TESTS (UC11) --------
+
+    @Test
+    void testVolumeEquality_LitreToMillilitre() {
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+
+        assertTrue(v1.equals(v2));
     }
 
     @Test
-    void testConvertFeetToInches() {
+    void testVolumeConversion_LitreToMillilitre() {
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
 
-        QuantityMeasurementApp a =
-                new QuantityMeasurementApp(1, LengthUnit.FEET);
+        Quantity<VolumeUnit> result = v1.convertTo(VolumeUnit.MILLILITRE);
 
-        QuantityMeasurementApp result =
-                a.convertTo(LengthUnit.INCHES);
-
-        assertEquals(12.0, result.getValue(), 0.001);
+        assertEquals(1000.0, result.getValue(), 0.01);
     }
 
     @Test
-    void testAdditionFeetAndInches() {
+    void testVolumeConversion_GallonToLitre() {
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.GALLON);
 
-        QuantityMeasurementApp a =
-                new QuantityMeasurementApp(1, LengthUnit.FEET);
+        Quantity<VolumeUnit> result = v1.convertTo(VolumeUnit.LITRE);
 
-        QuantityMeasurementApp b =
-                new QuantityMeasurementApp(12, LengthUnit.INCHES);
-
-        QuantityMeasurementApp result =
-                a.add(b, LengthUnit.FEET);
-
-        assertEquals(2.0, result.getValue(), 0.001);
+        assertEquals(3.78541, result.getValue(), 0.01);
     }
 
     @Test
-    void testAdditionDifferentUnits() {
+    void testVolumeAddition() {
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
 
-        QuantityMeasurementApp a =
-                new QuantityMeasurementApp(36, LengthUnit.INCHES);
+        Quantity<VolumeUnit> result = v1.add(v2);
 
-        QuantityMeasurementApp b =
-                new QuantityMeasurementApp(1, LengthUnit.YARDS);
+        assertEquals(2.0, result.getValue(), 0.01);
+    }
 
-        QuantityMeasurementApp result =
-                a.add(b, LengthUnit.FEET);
+    @Test
+    void testVolumeAddition_WithTargetUnit() {
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(1.0, VolumeUnit.GALLON);
 
-        assertEquals(6.0, result.getValue(), 0.001);
+        Quantity<VolumeUnit> result = v1.add(v2, VolumeUnit.MILLILITRE);
+
+        assertEquals(4785.41, result.getValue(), 0.1);
+    }
+
+    @Test
+    void testCrossCategoryComparison() {
+        Quantity<VolumeUnit> v = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<LengthUnit> l = new Quantity<>(1.0, LengthUnit.FEET);
+
+        assertFalse(v.equals(l));
     }
 }
