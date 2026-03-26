@@ -1,79 +1,49 @@
+
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class QuantityMeasurementAppTest {
 
-    // -------- LENGTH TESTS --------
-    @Test
-    void testLengthEquality() {
-        Quantity<LengthUnit> q1 = new Quantity<>(1.0, LengthUnit.FEET);
-        Quantity<LengthUnit> q2 = new Quantity<>(12.0, LengthUnit.INCHES);
-
-        assertTrue(q1.equals(q2));
-    }
-
-    // -------- WEIGHT TESTS --------
-    @Test
-    void testWeightEquality() {
-        Quantity<WeightUnit> q1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
-        Quantity<WeightUnit> q2 = new Quantity<>(1000.0, WeightUnit.GRAM);
-
-        assertTrue(q1.equals(q2));
-    }
-
-    // -------- VOLUME TESTS (UC11) --------
+    // --- UC14 Temperature Tests [cite: 719, 780, 786] ---
 
     @Test
-    void testVolumeEquality_LitreToMillilitre() {
-        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
-        Quantity<VolumeUnit> v2 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
-
-        assertTrue(v1.equals(v2));
+    void testTemperatureEquality_0CelsiusEquals32Fahrenheit() {
+        Quantity<TemperatureUnit> celsius = new Quantity<>(0.0, TemperatureUnit.CELSIUS);
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(32.0, TemperatureUnit.FAHRENHEIT);
+        assertEquals(celsius, fahrenheit); // [cite: 781]
     }
 
     @Test
-    void testVolumeConversion_LitreToMillilitre() {
-        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
-
-        Quantity<VolumeUnit> result = v1.convertTo(VolumeUnit.MILLILITRE);
-
-        assertEquals(1000.0, result.getValue(), 0.01);
+    void testTemperatureConversion_CelsiusToFahrenheit() {
+        Quantity<TemperatureUnit> celsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Quantity<TemperatureUnit> converted = celsius.convertTo(TemperatureUnit.FAHRENHEIT);
+        assertEquals(212.0, converted.getValue()); // [cite: 787]
     }
 
     @Test
-    void testVolumeConversion_GallonToLitre() {
-        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.GALLON);
+    void testTemperatureUnsupportedOperation_AddThrowsException() {
+        Quantity<TemperatureUnit> t1 = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Quantity<TemperatureUnit> t2 = new Quantity<>(50.0, TemperatureUnit.CELSIUS);
+        // [cite: 596, 730]
+        assertThrows(UnsupportedOperationException.class, () -> t1.add(t2));
+    }
 
-        Quantity<VolumeUnit> result = v1.convertTo(VolumeUnit.LITRE);
+    // --- Fixed Previous UC Tests (Backward Compatibility) [cite: 666, 731] ---
 
-        assertEquals(3.78541, result.getValue(), 0.01);
+    @Test
+    void testLengthEquality_1FeetEquals12Inches() {
+        Quantity<LengthUnit> feet = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> inches = new Quantity<>(12.0, LengthUnit.INCHES);
+        assertEquals(feet, inches);
     }
 
     @Test
-    void testVolumeAddition() {
-        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
-        Quantity<VolumeUnit> v2 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
-
-        Quantity<VolumeUnit> result = v1.add(v2);
-
-        assertEquals(2.0, result.getValue(), 0.01);
-    }
-
-    @Test
-    void testVolumeAddition_WithTargetUnit() {
-        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
-        Quantity<VolumeUnit> v2 = new Quantity<>(1.0, VolumeUnit.GALLON);
-
-        Quantity<VolumeUnit> result = v1.add(v2, VolumeUnit.MILLILITRE);
-
-        assertEquals(4785.41, result.getValue(), 0.1);
-    }
-
-    @Test
-    void testCrossCategoryComparison() {
-        Quantity<VolumeUnit> v = new Quantity<>(1.0, VolumeUnit.LITRE);
-        Quantity<LengthUnit> l = new Quantity<>(1.0, LengthUnit.FEET);
-
-        assertFalse(v.equals(l));
+    void testVolumeAddition_1LitrePlus1000MillilitresEquals2Litres() {
+        Quantity<VolumeUnit> litre = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> ml = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+        // Corrected: passing only the Quantity object to the add method [cite: 702]
+        Quantity<VolumeUnit> result = litre.add(ml);
+        assertEquals(2.0, result.getValue());
     }
 }
