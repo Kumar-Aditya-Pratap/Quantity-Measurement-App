@@ -1,48 +1,34 @@
-package com.bridgelabz.enums;
+package com.example.quantity_measurement_app.enums;
 
-import com.bridgelabz.interfaces.IMeasurable;
-import com.bridgelabz.interfaces.SupportsArithmetic;
+import com.example.quantity_measurement_app.interfaces.*;
 
-import java.util.function.Function;
+public enum TemperatureUnit implements IMeasurable, ArithmeticCapable {
 
-public enum TemperatureUnit implements IMeasurable {
-    CELSIUS(c -> c, c -> c),
+    CELSIUS,
+    FAHRENHEIT,
+    KELVIN;
 
-    FAHRENHEIT(f -> (f - 32) * 5 / 9, c -> (c * 9 / 5) + 32),
-
-    KELVIN(k -> k - 273.15, c -> c + 273.15);
-
-    private final Function<Double, Double> toCelsius;
-    private final Function<Double, Double> fromCelsius;
-
-    SupportsArithmetic supportsArithmetic = () -> false;
-
-    TemperatureUnit(Function<Double, Double> toCelsius,
-            Function<Double, Double> fromCelsius) {
-
-        this.toCelsius = toCelsius;
-        this.fromCelsius = fromCelsius;
-    }
-
-    @Override
     public double convertToBaseUnit(double value) {
-        return toCelsius.apply(value);
+        return switch (this) {
+            case CELSIUS -> value;
+            case FAHRENHEIT -> (value - 32) * 5 / 9;
+            case KELVIN -> value - 273.15;
+        };
     }
 
-    @Override
-    public double convertFromBaseUnit(double baseValue) {
-        return fromCelsius.apply(baseValue);
+    public double convertFromBaseUnit(double value) {
+        return switch (this) {
+            case CELSIUS -> value;
+            case FAHRENHEIT -> (value * 9 / 5) + 32;
+            case KELVIN -> value + 273.15;
+        };
     }
 
-    @Override
-    public void validateOperationSupport(String operation) {
-        throw new UnsupportedOperationException(
-                "Operation '" + operation + "' is not supported for Temperature."
-        );
-    }
-
-    @Override
-    public String getUnitName(){
+    public String getUnitName() {
         return name();
+    }
+
+    public boolean supportsArithmetic() {
+        return false;
     }
 }

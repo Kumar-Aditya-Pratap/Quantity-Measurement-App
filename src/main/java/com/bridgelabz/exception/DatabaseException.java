@@ -1,4 +1,4 @@
-package com.bridgelabz.exception;
+package com.example.quantity_measurement_app.exception;
 
 public class DatabaseException extends RuntimeException {
     public DatabaseException(String message, Throwable cause) {

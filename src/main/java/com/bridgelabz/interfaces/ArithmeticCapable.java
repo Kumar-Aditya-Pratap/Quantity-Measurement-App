@@ -1,6 +1,5 @@
-package com.bridgelabz.interfaces;
+package com.example.quantity_measurement_app.interfaces;
 
 public interface ArithmeticCapable {
-    double add(double a, double b);
-    double subtract(double a, double b);
+    boolean supportsArithmetic();
 }

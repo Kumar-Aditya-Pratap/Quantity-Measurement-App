@@ -1,6 +1,6 @@
-package com.bridgelabz.repository;
+package com.example.quantity_measurement_app.repository;
 
-import com.bridgelabz.model.QuantityMeasurementEntity;
+import com.example.quantity_measurement_app.model.QuantityMeasurementEntity;
 import java.util.*;
 
 public class QuantityMeasurementCacheRepository implements IQuantityMeasurementRepository {

@@ -1,31 +1,29 @@
-package com.bridgelabz.model;
+package com.example.quantity_measurement_app.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
 
-import java.io.Serializable;
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class QuantityMeasurementEntity {
 
-@Getter
-@Setter
-public class QuantityMeasurementEntity implements Serializable {
-    private double value;
-    private String unit;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String operation;
-
+    private String measurementType;
+    private Double inputValue;
+    private Double resultValue;
     private boolean isError;
     private String errorMessage;
+    private LocalDateTime createdAt;
 
-    public QuantityMeasurementEntity(double value, String unit, String operation) {
-        this.value = value;
-        this.unit = unit;
-        this.operation = operation;
-    }
-
-    public QuantityMeasurementEntity(String errorMessage) {
-        this.isError = true;
-        this.errorMessage = errorMessage;
-    }
-
-    public QuantityMeasurementEntity() {
+    @PrePersist
+    public void setTime() {
+        this.createdAt = LocalDateTime.now();
     }
 }

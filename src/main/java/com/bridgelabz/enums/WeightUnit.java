@@ -1,39 +1,32 @@
-package com.bridgelabz.enums;
+package com.example.quantity_measurement_app.enums;
 
-import com.bridgelabz.interfaces.IMeasurable;
-import com.bridgelabz.interfaces.SupportsArithmetic;
+import com.example.quantity_measurement_app.interfaces.*;
 
-public enum WeightUnit implements IMeasurable {
+public enum WeightUnit implements IMeasurable, ArithmeticCapable {
+
     KILOGRAM(1.0),
     GRAM(0.001),
     POUND(0.453592);
 
-    private final double factorToKilogram;
-    WeightUnit(double factorToKilogram){
-        this.factorToKilogram = factorToKilogram;
+    private final double factor;
+
+    WeightUnit(double factor) {
+        this.factor = factor;
     }
 
-    SupportsArithmetic supportsArithmetic = () -> true;
-
-    @Override
-    // Converts value in this unit to base unit(Kilogram)
-    public double convertToBaseUnit(double value){
-        return value * factorToKilogram;
+    public double convertToBaseUnit(double value) {
+        return value * factor;
     }
 
-    @Override
-    // Converts base unit to this unit
-    public double convertFromBaseUnit(double value){
-        return value / factorToKilogram;
+    public double convertFromBaseUnit(double value) {
+        return value / factor;
     }
 
-
-    public double getConversionFactor() {
-        return factorToKilogram;
-    }
-
-    @Override
-    public String getUnitName(){
+    public String getUnitName() {
         return name();
+    }
+
+    public boolean supportsArithmetic() {
+        return true;
     }
 }

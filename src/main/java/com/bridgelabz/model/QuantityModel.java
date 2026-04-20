@@ -1,6 +1,6 @@
-package com.bridgelabz.model;
+package com.example.quantity_measurement_app.model;
 
-import com.bridgelabz.interfaces.IMeasurable;
+import com.example.quantity_measurement_app.interfaces.IMeasurable;
 import lombok.Getter;
 import lombok.Setter;
 

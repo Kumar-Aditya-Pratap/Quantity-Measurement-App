@@ -1,23 +1,19 @@
-package com.bridgelabz.controller;
+package com.example.quantity_measurement_app.controller;
 
-import com.bridgelabz.dto.QuantityDTO;
-import com.bridgelabz.repository.IQuantityMeasurementRepository;
-import com.bridgelabz.service.IQuantityMeasurementService;
-import com.bridgelabz.service.QuantityMeasurementServiceImpl;
+import com.example.quantity_measurement_app.dto.*;
+import com.example.quantity_measurement_app.service.IQuantityMeasurementService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/api/v1/quantities")
 public class QuantityMeasurementController {
 
-    private final IQuantityMeasurementService service;
+    @Autowired
+    private IQuantityMeasurementService service;
 
-    public QuantityMeasurementController(IQuantityMeasurementRepository repo) {
-        this.service = new QuantityMeasurementServiceImpl(repo);
-    }
-
-    public double add(QuantityDTO a, QuantityDTO b) {
-        return service.add(a, b);
-    }
-
-    public boolean compare(QuantityDTO a, QuantityDTO b) {
-        return service.compare(a, b);
+    @PostMapping("/convert")
+    public QuantityMeasurementDTO convert(@RequestBody QuantityDTO dto) {
+        return service.convert(dto);
     }
 }

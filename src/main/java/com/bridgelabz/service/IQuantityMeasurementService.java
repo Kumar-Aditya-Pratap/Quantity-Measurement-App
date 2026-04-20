@@ -1,8 +1,7 @@
-package com.bridgelabz.service;
+package com.example.quantity_measurement_app.service;
 
-import com.bridgelabz.dto.QuantityDTO;
+import com.example.quantity_measurement_app.dto.*;
 
 public interface IQuantityMeasurementService {
-    double add(QuantityDTO a, QuantityDTO b);
-    boolean compare(QuantityDTO a, QuantityDTO b);
+    QuantityMeasurementDTO convert(QuantityDTO dto);
 }

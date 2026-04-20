@@ -1,4 +1,4 @@
-package com.bridgelabz.util;
+package com.example.quantity_measurement_app.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

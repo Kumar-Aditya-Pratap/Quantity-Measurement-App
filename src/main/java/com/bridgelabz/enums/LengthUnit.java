@@ -1,46 +1,33 @@
-package com.bridgelabz.enums;
+package com.example.quantity_measurement_app.enums;
 
-import com.bridgelabz.interfaces.IMeasurable;
-import com.bridgelabz.interfaces.SupportsArithmetic;
+import com.example.quantity_measurement_app.interfaces.*;
 
-public enum LengthUnit implements IMeasurable {
-    // FEET is base unit → conversion factor = 1.0
-    FEET(1.0),
-    INCH(1.0 / 12.0),
-    YARD(3.0),
-    // 1 YARD = 3 feet
-    CENTIMETER(0.393701 / 12.0);
-    // 1 cm = 0.393701 inch
-    // 1 inch = 1/12 feet
-    // so cm to feet = 0.393701 / 12
+public enum LengthUnit implements IMeasurable, ArithmeticCapable {
 
-    // Each enum constant stores its conversion factor to FEET
-    private final double conversionFactorToFeet;
+    METER(1.0),
+    CENTIMETER(0.01),
+    KILOMETER(1000),
+    INCH(0.0254);
 
-    // Constructor runs once for each enum constant
-    LengthUnit(double conversionFactorToFeet){
-        this.conversionFactorToFeet = conversionFactorToFeet;
+    private final double factor;
+
+    LengthUnit(double factor) {
+        this.factor = factor;
     }
 
-    // Converts given value into FEET
-    @Override
-    public double convertToBaseUnit(double value){
-        return value * conversionFactorToFeet;
+    public double convertToBaseUnit(double value) {
+        return value * factor;
     }
 
-    SupportsArithmetic supportsArithmetic = () -> true;
-
-    @Override
-    public double convertFromBaseUnit(double value){
-        return (value / conversionFactorToFeet);
+    public double convertFromBaseUnit(double value) {
+        return value / factor;
     }
 
-    public double getConversionFactor(){
-        return conversionFactorToFeet;
-    }
-
-    @Override
     public String getUnitName() {
         return name();
+    }
+
+    public boolean supportsArithmetic() {
+        return true;
     }
 }
